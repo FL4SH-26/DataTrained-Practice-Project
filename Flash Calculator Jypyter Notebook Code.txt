@@ -1,0 +1,220 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[24]:
+
+
+from tkinter import*
+import math
+
+root = Tk()
+root.title("Flash Calculator")
+root.resizable(width=False, height=False)
+root.geometry("470x620+500+40")
+
+mainFrame = Frame(root, bd=10, bg='Blue', relief=RIDGE)
+mainFrame.grid()
+
+
+innerFrame = Frame(mainFrame, bd=5, bg='gainsboro', relief=RIDGE)
+innerFrame.grid()
+
+class Calc():
+    def __init__(self):
+        self.total =0
+        self.current =""
+        self.firstnum =""
+        self.secondnum =""
+        self.input_value = True
+        self.check_sum = False
+        self.op=""
+        self.result = False
+        
+    def numberEnter(self, num):
+        self.result = False
+        firstnum = txtDisplay.get()
+        secondnum = str(num)
+        if self.input_value:
+            self.current = secondnum
+            self.input_value = False
+        else:
+            if secondnum == '.':
+                if secondnum in firstnum:
+                    return
+            self.current = firstnum + secondnum
+        self.display(self.current)
+        
+    def sum_of_total(self):
+        self.result = True
+        self.current = float(self.current)
+        if self.check_sum == True:
+            self.valid_function()
+        else:
+            self.total = float(txtDisplay.get())
+            
+    def display(self, value):
+        txtDisplay.delete(0,  END)
+        txtDisplay.insert(0, value)
+        
+        
+    def clear_Entry(self):
+        self.result =False
+        self.current ="0"
+        self.input_value =True
+        self.display(0)
+        
+    def all_clear_Entry(self):
+        self.clear_Entry()
+        self.total =(0)
+        
+    def mathsPM(self):
+        self.result =False
+        self.current = - (float(txtDisplay.get()))
+        self.display(self.current)
+        
+    def pi(self):
+        self.result = False
+        self.current = math.pi
+        self.display(self.current)
+        
+    def squared1(self):
+        self.result = False
+        self.current = math.sqrt(float(txtDisplay.get()))
+        self.display(self.current)
+        
+    def squared2(self):
+        self.result = False
+        self.firstnum = (float(txtDisplay.get()))
+        self.secondnum = (float(txtDisplay.get()))
+        self.current = (self.firstnum * self.secondnum)
+        self.display(self.current)
+        
+    def squared3(self):
+        self.result = False
+        self.firstnum = (float(1))
+        self.secondnum = (float(txtDisplay.get()))
+        self.current = (self.firstnum / self.secondnum)
+        self.display(self.current)
+        
+    def backspace(self):
+        numLen =len(txtDisplay.get())
+        txtDisplay.delete(numLen - 1, 'end')
+        if numLen == 1:
+            txtDisplay.insert(0, "0")
+            
+    def valid_function(self):
+        if self.op == "add":
+            self.total += self.current
+        if self.op == "sub":
+            self.total -= self.current
+        if self.op == "multi":
+            self.total *= self.current
+        if self.op == "divide":
+            self.total /= self.current
+        if self.op == "mod":
+            self.total %= self.current
+        self.input_value = True
+        self.check_sum = False
+        self.display(self.total)
+        
+    def operation(self, op):
+        self.current = float(self.current)
+        if self.check_sum:
+            self.valid_function()
+        elif not self.result:
+            self.total = self.current
+            self.input_value = True
+        self.check_sum = True
+        self.op = op
+        self.result = False
+            
+         
+             
+          
+        
+added_value = Calc()
+
+txtDisplay =Entry(innerFrame, font=('arial',18,'bold'), bd=10, width=32, justify=RIGHT)
+txtDisplay.grid(row=0, column=0, columnspan=4, pady=1)
+txtDisplay.insert(0, "0")
+
+numberpad = "789456123"
+i=0
+btn = []
+for j in range(3 , 6):
+    for k in range(3):
+        btn.append(Button (innerFrame, width=6, height =2, font=('arial',18,'bold'), bd=7, text= numberpad[i] ))
+        btn[i].grid(row=j,column= k)
+        btn[i]["command"] = lambda x = numberpad[i]: added_value.numberEnter(x) 
+        i += 1
+        #----------------------------------------Buttons widget-----------------------------------------------
+
+btnDelete  = Button(innerFrame, text = "", width=6, height =2, font=('arial',18,'bold'),bd=7, bg='gainsboro', 
+                   command = added_value.backspace)       
+btnDelete.grid(row=1,column= 0)
+btnClear  = Button(innerFrame, text = "C", width=6, height =2, font=('arial',18,'bold'),bd=7, bg='gainsboro', 
+                    command = added_value.clear_Entry)       
+btnClear.grid(row=1,column= 1)
+btnallClear  = Button(innerFrame, text = "CE", width=6, height =2, font=('arial',18,'bold'),bd=7, bg='gainsboro', 
+                      command = added_value.all_clear_Entry)     
+btnallClear.grid(row=1,column= 2 )
+btnPM  = Button(innerFrame, text =chr(177), width=6, height =2, font=('arial',18,'bold'),bd=7, bg='gainsboro', 
+                command= added_value.mathsPM)       
+btnPM.grid(row=1,column= 3 )
+
+        #----------------------------------------Buttons widget-----------------------------------------------
+
+btnsq  = Button(innerFrame, text = "√", width=6, height =2, font=('arial',18,'bold'),bd=7, 
+                command = added_value.squared1)       
+btnsq.grid(row=2,column= 0)
+btnx2  = Button(innerFrame, text = "x^2", width=6, height =2, font=('arial',18,'bold'),bd=7, 
+                command = added_value.squared2)       
+btnx2.grid(row=2,column= 1)
+btn1x  = Button(innerFrame, text = "1/x", width=6, height =2, font=('arial',18,'bold'),bd=7, 
+                command = added_value.squared3)      
+btn1x.grid(row=2,column= 2 )
+btnPi  = Button(innerFrame, text ="π", width=6, height =2, font=('arial',18,'bold'),bd=7, bg='gainsboro', 
+                command= added_value.pi)       
+btnPi.grid(row=2,column= 3 )
+
+        #----------------------------------------Buttons widget-----------------------------------------------
+
+btnAdd  = Button(innerFrame, text = "+", width=6, height =2, font=('arial',18,'bold'),bd=7, bg='gainsboro',
+                command= lambda:added_value.operation("add"))       
+btnAdd.grid(row=3,column= 3)
+btnsub  = Button(innerFrame, text = "-", width=6, height =2, font=('arial',18,'bold'),bd=7, bg='gainsboro',
+                command= lambda:added_value.operation("sub"))       
+btnsub.grid(row=4,column= 3)
+btnmulti  = Button(innerFrame, text = "*", width=6, height =2, font=('arial',18,'bold'),bd=7, bg='gainsboro',
+                command= lambda:added_value.operation("multi"))       
+btnmulti.grid(row=5,column= 3 )
+btndiv  = Button(innerFrame, text ="/", width=6, height =2, font=('arial',18,'bold'),bd=7, bg='gainsboro',
+                command= lambda:added_value.operation("divide"))       
+btndiv.grid(row=6,column= 3 )
+
+        #----------------------------------------Buttons widget-----------------------------------------------
+
+btnZero  = Button(innerFrame, text = "0", width=6, height =2, font=('arial',18,'bold'),bd=7, bg='gainsboro',
+                 command= lambda:added_value.numberEnter(0))       
+btnZero.grid(row=6,column= 0)
+btndot  = Button(innerFrame, text = ".", width=6, height =2, font=('arial',18,'bold'),bd=7, bg='gainsboro',
+                command= lambda:added_value.numberEnter("."))       
+btndot.grid(row=6,column= 1)
+btnequals  = Button(innerFrame, text = "=", width=6, height =2, font=('arial',18,'bold'),bd=7, bg='gainsboro',
+                   command= added_value.sum_of_total)       
+btnequals.grid(row=6,column= 2 )
+
+root.mainloop()
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
